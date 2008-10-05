@@ -1,0 +1,44 @@
+<link media="screen" type="text/css" href="++resource++collective.z3cform.datepicker.css" rel="stylesheet">
+<script type="text/javascript" src="++resource++collective.z3cform.datepicker.js"></script>
+<script type="text/javascript" tal:content="structure view/datepicker_javascript"></script>
+
+
+<select id="" name=""
+        tal:attributes="id string:${view/id}-month">
+    <option value=""
+            tal:repeat="item view/months"
+            tal:attributes="value item"
+            tal:content="item" />
+</select> /
+<select id="" name=""
+        tal:attributes="id string:${view/id}-day">
+    <option value=""
+            tal:repeat="item view/days"
+            tal:attributes="value item"
+            tal:content="item" />
+</select> /
+<select id="" name=""
+        tal:attributes="id string:${view/id}-year">
+    <option value=""
+            tal:repeat="item view/years"
+            tal:attributes="value item"
+            tal:content="item" />
+</select>
+<input type="hidden" id="" name=""
+       tal:attributes="id view/id;
+                       name view/name;
+                       value view/value;" />
+<select id="" name=""
+        tal:attributes="id string:${view/id}-hour">
+    <option value=""
+            tal:repeat="item view/hours"
+            tal:attributes="value item"
+            tal:content="item" />
+</select> :
+<select id="" name=""
+        tal:attributes="id string:${view/id}-min">
+    <option value=""
+            tal:repeat="item view/minutes"
+            tal:attributes="value item"
+            tal:content="item" />
+</select>
