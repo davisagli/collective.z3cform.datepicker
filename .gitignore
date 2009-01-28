@@ -3,5 +3,14 @@
 *.swp
 *.egg-info
 *.svn
-build
-dist
+build/
+dist/
+downloads/*
+.installed.cfg
+bin/
+develop-eggs/
+include/
+lib/
+parts/
+var/
+

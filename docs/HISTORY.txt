@@ -1,8 +1,14 @@
 Changelog
 =========
 
-0.1 - Unreleased
-----------------
+0.1b2 - Unreleased
+------------------
 
-* Initial release
+* added collective.jqueryui as dependency [garbas]
+
+
+0.1b1 - 10/05/2008
+------------------
+
+* initial release [garbas]
 

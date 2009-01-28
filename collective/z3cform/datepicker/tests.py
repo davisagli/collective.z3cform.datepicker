@@ -1,54 +1,40 @@
-import unittest
 
-from zope.testing import doctestunit
-from zope.component import testing
-from Testing import ZopeTestCase as ztc
+from zope.interface import Interface
+from zope.schema import Datetime
 
-from Products.Five import zcml
-from Products.Five import fiveconfigure
-from Products.PloneTestCase import PloneTestCase as ptc
-from Products.PloneTestCase.layer import PloneSite
-ptc.setupPloneSite()
-
-import collective.z3cform.datepicker
-
-class TestCase(ptc.PloneTestCase):
-    class layer(PloneSite):
-        @classmethod
-        def setUp(cls):
-            fiveconfigure.debug_mode = True
-            zcml.load_config('configure.zcml',
-                             collective.z3cform.datepicker)
-            fiveconfigure.debug_mode = False
-
-        @classmethod
-        def tearDown(cls):
-            pass
+from z3c.form.form import Form
+from z3c.form.field import Fields
+from z3c.form.button import buttonAndHandler
+from z3c.form.interfaces import INPUT_MODE
+from plone.app.z3cform.layout import wrap_form
+from collective.z3cform.datepicker.widget import DatePickerFieldWidget
+from collective.z3cform.datepicker.widget import DateTimePickerFieldWidget
 
 
-def test_suite():
-    return unittest.TestSuite([
-
-        # Unit tests
-        #doctestunit.DocFileSuite(
-        #    'README.txt', package='collective.z3cform.datepicker',
-        #    setUp=testing.setUp, tearDown=testing.tearDown),
-
-        #doctestunit.DocTestSuite(
-        #    module='collective.z3cform.datepicker.mymodule',
-        #    setUp=testing.setUp, tearDown=testing.tearDown),
+class ITestForm(Interface):
+    """ """
+    date = Datetime(
+        title       = u'Date widget',
+        required    = False,)
+    datetime = Datetime(
+        title       = u'DateTime widget',
+        required    = False,)
 
 
-        # Integration tests that use PloneTestCase
-        #ztc.ZopeDocFileSuite(
-        #    'README.txt', package='collective.z3cform.datepicker',
-        #    test_class=TestCase),
+class TestForm(Form):
+    """ """
 
-        #ztc.FunctionalDocFileSuite(
-        #    'browser.txt', package='collective.z3cform.datepicker',
-        #    test_class=TestCase),
+    ignoreContext = True
+    fields = Fields(ITestForm)
+    fields['date'].widgetFactory[INPUT_MODE] = DatePickerFieldWidget
+    fields['datetime'].widgetFactory[INPUT_MODE] = DateTimePickerFieldWidget
 
-        ])
+    @buttonAndHandler(u'Submit')
+    def submit(self, action):
+        data, errors = self.extractData()
+        if errors: return False
 
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+
+        return True
+
+TestView = wrap_form(TestForm)

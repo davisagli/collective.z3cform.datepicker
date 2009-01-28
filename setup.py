@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '0.1b1'
+version = '0.1b2'
 
 setup(name='collective.z3cform.datepicker',
       version=version,
@@ -26,6 +26,7 @@ setup(name='collective.z3cform.datepicker',
       install_requires=[
           'setuptools',
           'plone.z3cform',
+          'collective.jqueryui',
       ],
       entry_points="""
       # -*- Entry points: -*-

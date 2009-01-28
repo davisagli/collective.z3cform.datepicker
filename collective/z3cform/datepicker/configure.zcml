@@ -5,23 +5,15 @@
     i18n_domain="collective.z3cform.datepicker">
 
     <include package="plone.z3cform" />
-
-    <browser:resource
-        name="collective.z3cform.datepicker.css"
-        file="static/ui.datepicker.css" />
-    <browser:resource
-        name="collective.z3cform.datepicker.js"
-        file="static/ui.datepicker.js" />
+    <include package="collective.jqueryui" />
 
     <class class=".widget.DatePickerWidget">
-        <require 
-            permission="zope.Public"
-            interface=".interfaces.IDatePickerWidget" />
+        <require permission="zope.Public"
+                 interface=".interfaces.IDatePickerWidget" />
     </class>
     <class class=".widget.DateTimePickerWidget">
-        <require 
-            permission="zope.Public"
-            interface=".interfaces.IDateTimePickerWidget" />
+        <require permission="zope.Public"
+                 interface=".interfaces.IDateTimePickerWidget" />
     </class>
 
     <adapter factory=".widget.DatePickerFieldWidget" />

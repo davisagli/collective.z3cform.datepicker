@@ -1,5 +1,5 @@
-<link media="screen" type="text/css" href="++resource++collective.z3cform.datepicker.css" rel="stylesheet">
-<script type="text/javascript" src="++resource++collective.z3cform.datepicker.js"></script>
+<link media="screen" type="text/css" href="++resource++jquery.ui/themes/base/ui.datepicker.css" rel="stylesheet">
+<script type="text/javascript" src="++resource++jquery.ui/ui/packed/ui.datepicker.packed.js"></script>
 <script type="text/javascript" tal:content="view/datepicker_javascript"></script>
 <input type="text" id="" name="" class="" title="" lang="" disabled=""
        readonly="" alt="" tabindex="" accesskey="" size="" maxlength=""
