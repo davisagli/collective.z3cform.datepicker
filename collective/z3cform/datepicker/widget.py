@@ -57,6 +57,49 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
     def update(self):
         super(DatePickerWidget, self).update()
         widget.addFieldClass(self)
+        
+    def get_date_component(self, comp):
+        """ Get string of of one part of datetime
+        
+        See z3c.form.converter.CalendarDataConverter
+        
+        @param comp: strftime formatter symbol
+        """      
+        
+        locale = self.request.locale
+        formatter = locale.dates.getFormatter("dateTime", "long")
+                
+        if self.value == u'':
+            return None
+        
+        # Dug up the pattern with pdb, don't know where it comes from
+        try:
+            value = formatter.parse(self.value)
+        except:            
+            #import pdb ; pdb.set_trace()
+            return None
+        
+        # TODO: What if the strftime return value has international letters?
+        return unicode(value.strftime(comp))
+        
+    def is_month_checked(self, month):
+        """ <option> checket attribute evaluator """
+        
+        value = self.get_date_component("%m")        
+        # Strip leading zero
+        if value == None:
+            return False
+        value = int(str(value))
+        
+        return unicode(month) == unicode(value)
+
+    def is_day_checked(self, day):
+        """ <option> checket attribute evaluator """        
+        return unicode(day) == self.get_date_component("%d")
+        
+    def is_year_checked(self, year):
+        """ <option> checket attribute evaluator """
+        return unicode(year) == self.get_date_component("%Y")        
 
     def datepicker_javascript(self):
         return '''
@@ -177,6 +220,16 @@ class DateTimePickerWidget(DatePickerWidget):
                           showOn            = self.showOn,
                           buttonImage       = self.buttonImage,
                           buttonImageOnly   = str(self.buttonImageOnly).lower())
+            
+                    
+    def is_hour_checked(self, hour):
+        """ <option> checket attribute evaluator """        
+        return unicode(hour) == self.get_date_component("%H")
+
+    def is_minute_checked(self, minute):
+        """ <option> checket attribute evaluator """        
+        # TODO what do to if minute drop down interval does not match the actual value
+        return unicode(minute) == self.get_date_component("%M")
 
 
 @adapter(IDatePickerWidget, IFormLayer)

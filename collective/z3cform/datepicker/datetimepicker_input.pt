@@ -7,21 +7,21 @@
         tal:attributes="id string:${view/id}-month">
     <option value=""
             tal:repeat="item view/months"
-            tal:attributes="value item"
+            tal:attributes="value item;selected python:view.is_month_checked(item) or None"
             tal:content="item" />
 </select> /
 <select id="" name=""
         tal:attributes="id string:${view/id}-day">
     <option value=""
             tal:repeat="item view/days"
-            tal:attributes="value item"
+            tal:attributes="value item;selected python:view.is_day_checked(item) or None"
             tal:content="item" />
 </select> /
 <select id="" name=""
         tal:attributes="id string:${view/id}-year">
     <option value=""
             tal:repeat="item view/years"
-            tal:attributes="value item"
+            tal:attributes="value item;selected python:view.is_year_checked(item) or None"
             tal:content="item" />
 </select>
 <input type="hidden" id="" name=""
@@ -32,13 +32,13 @@
         tal:attributes="id string:${view/id}-hour">
     <option value=""
             tal:repeat="item view/hours"
-            tal:attributes="value item"
+            tal:attributes="value item;selected python:view.is_hour_checked(item) or None"
             tal:content="item" />
 </select> :
 <select id="" name=""
         tal:attributes="id string:${view/id}-min">
     <option value=""
             tal:repeat="item view/minutes"
-            tal:attributes="value item"
+            tal:attributes="value item;selected python:view.is_minute_checked(item) or None"
             tal:content="item" />
 </select>
