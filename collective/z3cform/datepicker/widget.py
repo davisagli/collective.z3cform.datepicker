@@ -31,6 +31,7 @@ from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IDatetime
 from zope.i18n.format import DateTimeParseError
 
+import z3c.form
 from z3c.form.browser import widget
 from z3c.form.widget import FieldWidget
 from z3c.form.widget import Widget
@@ -59,20 +60,20 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
         widget.addFieldClass(self)
         
     def get_date_component(self, comp):
-        """ Get string of of one part of datetime
+        """ Get string of of one part of datetime.
         
         See z3c.form.converter.CalendarDataConverter
         
         @param comp: strftime formatter symbol
         """      
-        
+    
+        # match z3c.form.converter here
         locale = self.request.locale
         formatter = locale.dates.getFormatter("dateTime", "long")
                 
         if self.value == u'':
             return None
-        
-        # Dug up the pattern with pdb, don't know where it comes from
+    
         try:
             value = formatter.parse(self.value)
         except:            
@@ -230,6 +231,32 @@ class DateTimePickerWidget(DatePickerWidget):
         """ <option> checket attribute evaluator """        
         # TODO what do to if minute drop down interval does not match the actual value
         return unicode(minute) == self.get_date_component("%M")
+    
+    def extract(self, default=z3c.form.interfaces.NOVALUE):
+        """ Non-Javascript based value reader.
+        
+        Scan all selection lists and form datetime based on them.
+        """
+        
+        components = [ "year", "day", "month", "hour", "min" ]
+        values = {}                
+        
+        for c in components:
+            # Get individual selection list value
+            
+            # name is in format form.widgets.acuteInterventions_actilyseTreatmentDate
+            
+            component_value = self.request.get(self.name + "-" + c, default)    
+            if component_value == default:
+                # One component missing, 
+                # cannot built datetime
+                return default
+            
+            values[c] = component_value
+     
+        # convert to datepicker internal format
+        # TODO: Check this is fixed and not tied to portal_properties
+        return "%s/%s/%s %s:%s" % (values["month"], values["day"], values["year"], values["hour"], values["min"])
 
 
 @adapter(IDatePickerWidget, IFormLayer)
