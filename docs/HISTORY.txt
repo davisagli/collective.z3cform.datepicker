@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1rc2 - 02/12/2008
+-------------------
+
+ * rc1 broken missing manifest file [garbas]
+
 0.1rc1 - 02/12/2008
 -------------------
 
