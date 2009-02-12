@@ -4,7 +4,6 @@
 <script type="text/javascript" src="++resource++jquery.ui/ui/packed/ui.datepicker.packed.js"></script>
 <script type="text/javascript" 
         tal:attributes="src string:++resource++jquery.ui/ui/i18n/ui.datepicker-${view/language}.js"></script>
-<script type="text/javascript" tal:content="structure view/datepicker_javascript"></script>
 <select id="" name=""
         tal:attributes="id string:${view/id}-month;
                         name string:${view/name}-month">
@@ -49,3 +48,4 @@
             tal:attributes="value item;selected python:view.is_minute_checked(item) or None"
             tal:content="item" />
 </select>
+<script type="text/javascript" tal:content="structure view/datepicker_javascript"></script>

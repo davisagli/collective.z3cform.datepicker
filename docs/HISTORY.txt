@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1rc4 - 02/12/2008
+-------------------
+
+ * FIX: selecting date was not working for month with on number [garbas]
+
 0.1rc3 - 02/12/2008
 -------------------
 

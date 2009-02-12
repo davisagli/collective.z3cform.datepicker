@@ -176,9 +176,9 @@ class DateTimePickerWidget(DatePickerWidget):
                         if (datetime.length==1) {
                             date = datetime[0].split('/');
                             if (date.length==3) {
-                                jq("#%(id)s-month").val(date[0]); 
-                                jq("#%(id)s-day").val(date[1]); 
-                                jq("#%(id)s-year").val(date[2]); 
+                                jq("#%(id)s-month").val(parseInt(date[0])); 
+                                jq("#%(id)s-day").val(parseInt(date[1])); 
+                                jq("#%(id)s-year").val(parseInt(date[2])); 
                             }
                         }
                         if (datetime.length==2) {
