@@ -1,14 +1,17 @@
 Changelog
 =========
 
-0.1b2 - Unreleased
-------------------
+0.1rc1 - 02/12/2008
+-------------------
 
-* added collective.jqueryui as dependency [garbas]
-
+ * language support for widget [garbas]
+ * works with no javascript [miohtama]
+ * load value from context [miohtama]
+ * added collective.jqueryui as dependency [garbas]
+ * test buildout added [garbas]
 
 0.1b1 - 10/05/2008
 ------------------
 
-* initial release [garbas]
+ * initial release [garbas]
 
