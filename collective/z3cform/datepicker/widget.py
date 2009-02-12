@@ -58,7 +58,7 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
     def update(self):
         super(DatePickerWidget, self).update()
         widget.addFieldClass(self)
-        
+
     def get_date_component(self, comp):
         """ Get string of of one part of datetime.
         
@@ -76,7 +76,7 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
     
         try:
             value = formatter.parse(self.value)
-        except:            
+        except:
             #import pdb ; pdb.set_trace()
             return None
         
@@ -86,7 +86,7 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
     def is_month_checked(self, month):
         """ <option> checket attribute evaluator """
         
-        value = self.get_date_component("%m")        
+        value = self.get_date_component("%m")
         # Strip leading zero
         if value == None:
             return False
@@ -100,7 +100,7 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
         
     def is_year_checked(self, year):
         """ <option> checket attribute evaluator """
-        return unicode(year) == self.get_date_component("%Y")        
+        return unicode(year) == self.get_date_component("%Y")
 
     def datepicker_javascript(self):
         return '''
