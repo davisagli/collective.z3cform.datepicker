@@ -75,10 +75,10 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
         # match z3c.form.converter here
         locale = self.request.locale
         formatter = locale.dates.getFormatter("dateTime", "long")
-                
+        
         if self.value == u'':
             return None
-    
+
         try:
             value = formatter.parse(self.value)
         except:

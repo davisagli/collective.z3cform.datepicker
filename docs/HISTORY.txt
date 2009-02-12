@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1rc3 - 02/12/2008
+-------------------
+
+ * default theme was missed in widget [garbas]
+
 0.1rc2 - 02/12/2008
 -------------------
 

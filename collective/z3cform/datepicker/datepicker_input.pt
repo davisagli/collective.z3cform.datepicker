@@ -1,3 +1,5 @@
+<link media="screen" type="text/css" href="++resource++jquery.ui/themes/base/ui.core.css" rel="stylesheet">
+<link media="screen" type="text/css" href="++resource++jquery.ui/themes/base/ui.theme.css" rel="stylesheet">
 <link media="screen" type="text/css" href="++resource++jquery.ui/themes/base/ui.datepicker.css" rel="stylesheet">
 <script type="text/javascript" src="++resource++jquery.ui/ui/packed/ui.datepicker.packed.js"></script>
 <script type="text/javascript" 
