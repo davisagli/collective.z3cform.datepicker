@@ -1,22 +1,27 @@
 <link media="screen" type="text/css" href="++resource++jquery.ui/themes/base/ui.datepicker.css" rel="stylesheet">
 <script type="text/javascript" src="++resource++jquery.ui/ui/packed/ui.datepicker.packed.js"></script>
+<script type="text/javascript" 
+        tal:attributes="src string:++resource++jquery.ui/ui/i18n/ui.datepicker-${view/language}.js"></script>
 <script type="text/javascript" tal:content="structure view/datepicker_javascript"></script>
 <select id="" name=""
-        tal:attributes="id string:${view/id}-month">
+        tal:attributes="id string:${view/id}-month;
+                        name string:${view/name}-month">
     <option value=""
             tal:repeat="item view/months"
             tal:attributes="value item;selected python:view.is_month_checked(item) or None"
             tal:content="item" />
 </select> /
 <select id="" name=""
-        tal:attributes="id string:${view/id}-day">
+        tal:attributes="id string:${view/id}-day;
+                        name string:${view/name}-day">
     <option value=""
             tal:repeat="item view/days"
             tal:attributes="value item;selected python:view.is_day_checked(item) or None"
             tal:content="item" />
 </select> /
 <select id="" name=""
-        tal:attributes="id string:${view/id}-year">
+        tal:attributes="id string:${view/id}-year;
+                        name string:${view/name}-year">
     <option value=""
             tal:repeat="item view/years"
             tal:attributes="value item;selected python:view.is_year_checked(item) or None"
@@ -27,14 +32,16 @@
                        name view/name;
                        value view/value;" />
 <select id="" name=""
-        tal:attributes="id string:${view/id}-hour">
+        tal:attributes="id string:${view/id}-hour;
+                        name string:${view/name}-hour">
     <option value=""
             tal:repeat="item view/hours"
             tal:attributes="value item;selected python:view.is_hour_checked(item) or None"
             tal:content="item" />
 </select> :
 <select id="" name=""
-        tal:attributes="id string:${view/id}-min">
+        tal:attributes="id string:${view/id}-min;
+                        name string:${view/name}-min">
     <option value=""
             tal:repeat="item view/minutes"
             tal:attributes="value item;selected python:view.is_minute_checked(item) or None"

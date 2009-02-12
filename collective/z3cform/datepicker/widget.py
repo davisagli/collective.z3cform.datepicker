@@ -30,6 +30,7 @@ from zope.app.i18n import ZopeMessageFactory as _
 from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IDatetime
 from zope.i18n.format import DateTimeParseError
+from zope.i18n.interfaces import IUserPreferredLanguages
 
 import z3c.form
 from z3c.form.browser import widget
@@ -58,6 +59,10 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
     def update(self):
         super(DatePickerWidget, self).update()
         widget.addFieldClass(self)
+
+    @property
+    def language(self):
+        return IUserPreferredLanguages(self.request).getPreferredLanguages()[0]
 
     def get_date_component(self, comp):
         """ Get string of of one part of datetime.
@@ -239,14 +244,14 @@ class DateTimePickerWidget(DatePickerWidget):
         """
         
         components = [ "year", "day", "month", "hour", "min" ]
-        values = {}                
+        values = {}
         
         for c in components:
             # Get individual selection list value
             
             # name is in format form.widgets.acuteInterventions_actilyseTreatmentDate
             
-            component_value = self.request.get(self.name + "-" + c, default)    
+            component_value = self.request.get(self.name + "-" + c, default)
             if component_value == default:
                 # One component missing, 
                 # cannot built datetime
