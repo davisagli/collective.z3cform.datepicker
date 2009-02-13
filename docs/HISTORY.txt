@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1rc5 - 02/12/2008
+-------------------
+
+ * FIX: min/max year for datepicker popup was not set [garbas]
+
 0.1rc4 - 02/12/2008
 -------------------
 

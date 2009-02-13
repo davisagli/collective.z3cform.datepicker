@@ -212,8 +212,8 @@ class DateTimePickerWidget(DatePickerWidget):
                 jq("#%(id)s-hour").change(readLinked);
                 jq("#%(id)s-min").change(readLinked);
                 datepicker = jq("#%(id)s").datepicker({ 
-                        minDate: new Date(2001, 1 - 1, 1),
-                        maxDate: new Date(2010, 12 - 1, 31),
+                        minDate: new Date(%(min_year)s, 1 - 1, 1),
+                        maxDate: new Date(%(max_year)s, 12 - 1, 31),
                         beforeShow: readLinked,
                         onSelect: updateLinked,
                         showOn: "%(showOn)s", 
@@ -225,7 +225,9 @@ class DateTimePickerWidget(DatePickerWidget):
             });''' % dict(id                = self.id,
                           showOn            = self.showOn,
                           buttonImage       = self.buttonImage,
-                          buttonImageOnly   = str(self.buttonImageOnly).lower())
+                          buttonImageOnly   = str(self.buttonImageOnly).lower(),
+                          min_year          = self.years[0],
+                          max_year          = self.years[-1])
             
                     
     def is_hour_checked(self, hour):
