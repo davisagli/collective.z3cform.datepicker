@@ -1,6 +1,16 @@
 Changelog
 =========
 
+0.1rc6 - 02/27/2008
+-------------------
+
+ * FIX: prevent HTML validation errors because of missing JS encoding, 
+   added CDATA blocks to the JS [garbas]
+ * widgets tested in IE7, FF3, Opera9.6, Chrome (few css issues in opera 
+   and ie7) [garbas]
+ * support all (almost) jqueryui datpicker options [garbas]
+ * clear date button for DatePickerWidget [garbas]
+
 0.1rc5 - 02/12/2008
 -------------------
 

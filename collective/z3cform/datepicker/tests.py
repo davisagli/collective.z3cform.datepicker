@@ -1,5 +1,6 @@
 
 from zope.interface import Interface
+from zope.schema import Date
 from zope.schema import Datetime
 
 from z3c.form.form import Form
@@ -13,7 +14,7 @@ from collective.z3cform.datepicker.widget import DateTimePickerFieldWidget
 
 class ITestForm(Interface):
     """ """
-    date = Datetime(
+    date = Date(
         title       = u'Date widget',
         required    = False,)
     datetime = Datetime(
@@ -33,8 +34,6 @@ class TestForm(Form):
     def submit(self, action):
         data, errors = self.extractData()
         if errors: return False
-
-
         return True
 
 TestView = wrap_form(TestForm)

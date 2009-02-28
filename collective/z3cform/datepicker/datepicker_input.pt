@@ -2,13 +2,10 @@
 <link media="screen" type="text/css" href="++resource++jquery.ui/themes/base/ui.theme.css" rel="stylesheet">
 <link media="screen" type="text/css" href="++resource++jquery.ui/themes/base/ui.datepicker.css" rel="stylesheet">
 <script type="text/javascript" src="++resource++jquery.ui/ui/packed/ui.datepicker.packed.js"></script>
-<script type="text/javascript" 
-        tal:attributes="src string:++resource++jquery.ui/ui/i18n/ui.datepicker-${view/language}.js"></script>
-<script type="text/javascript" tal:content="view/datepicker_javascript"></script>
 <input type="text" id="" name="" class="" title="" lang="" disabled=""
        readonly="" alt="" tabindex="" accesskey="" size="" maxlength=""
-       tal:attributes="id view/id;
-                       name view/name;
+       tal:attributes="id string:${view/id}-for-display;
+                       name string:${view/name}-for-display;
                        class view/klass;
                        style view/style;
                        title view/title;
@@ -23,7 +20,6 @@
                        onkeypress view/onkeypress;
                        onkeydown view/onkeydown;
                        onkeyup view/onkeyup;
-                       value view/value;
                        disabled view/disabled;
                        tabindex view/tabindex;
                        onfocus view/onfocus;
@@ -35,3 +31,10 @@
                        onselect view/onselect;
                        size view/size;
                        maxlength view/maxlength" />
+<input type="hidden" id="" name="" 
+       tal:attributes="id view/id;
+                       value view/value;
+                       name view/name;" />
+<img src="delete_icon.gif" 
+     tal:attributes="id string:${view/id}-clear"/>
+<script type="text/javascript" tal:content="structure view/datepicker_javascript"></script>

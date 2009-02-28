@@ -48,13 +48,71 @@ from collective.z3cform.datepicker.interfaces import IDateTimePickerWidget
 class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
     """ Datepicker widget. """
     implementsOnly(IDatePickerWidget)
-    
-    showOn = u'both'
-    buttonImage = u'popup_calendar.gif'
-    buttonImageOnly = True
-    onSelect = None
-    altField = None
-    altFormat = None
+
+    klass = u'datepicker-widget'
+    size = 30 # we need a little bigger input box
+
+    # 
+    # for explanation how to set options look at:
+    # http://docs.jquery.com/UI/Datepicker
+   
+    options = dict(
+        # altField - we dont alow to change altField since we use it in our widget
+        altFormat               = u'DD, d MM, yy',
+        # appendText - we provide description different way
+        beforeShow              = None,
+        beforeShowDay           = None,
+        buttonImage             = u'popup_calendar.gif',
+        buttonImageOnly         = True,
+        buttonText              = u'...',
+        calculateWeek           = u'$.datepicker.iso8601Week',
+        changeFirstDay          = True,
+        changeMonth             = True,
+        changeYear              = True,
+        closeText               = u'Close',
+        constrainInput          = True,
+        currentText             = u'Today',
+        # dateFormat - we use mm/dd/yy always
+        dayNames                = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                                   'Thursday', 'Friday', 'Saturday'],
+        dayNamesMin             = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+        dayNamesShort           = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        defaultDate             = None,
+        duration                = u'normal',
+        firstDay                = 0,
+        gotoCurrent             = False,
+        hideIfNoPrevNext        = False,
+        isRTL                   = False,
+        maxDate                 = None,
+        minDate                 = None,
+        monthNames              = ['January', 'February', 'March', 'April', 'May',
+                                   'June', 'July', 'August', 'September',
+                                   'October', 'November', 'DecenextTextmber'],
+        monthNamesShort         = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        navigationAsDateFormat  = False,
+        nextText                = u'Next>',
+        numberOfMonths          = 1,
+        prevText                = u'<Prev',
+        shortYearCutoff         = 10,
+        showAnim                = u'show',
+        showButtonPanel         = False,
+        showOn                  = u'both',
+        showOptions             = {},
+        showOtherMonths         = False,
+        stepMonths              = 1,
+        yearRange               = u'-10:+10')
+
+    events = dict(
+        onChangeMonthYear       = None,
+        onClose                 = None,
+        onSelect                = None)
+
+    @property
+    def _options(self):
+        return dict(
+        altField   = '#'+self.id+u'-for-display',
+        dateFormat = u'mm/dd/yy')
 
     def update(self):
         super(DatePickerWidget, self).update()
@@ -64,6 +122,148 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
     def language(self):
         return IUserPreferredLanguages(self.request).getPreferredLanguages()[0]
 
+    def compile_options(self):
+        options = ''
+        for name, value in self._options.items()+self.options.items():
+            if value == None: value = 'null'
+            elif type(value) == bool: value = str(value).lower()
+            elif type(value) in [list, dict, int]: value = str(value)
+            elif name in ['beforeShow','beforeShowDay','minDate','maxDate']: value = str(value)
+            else: value = '"'+str(value)+'"'
+            options += name+': '+str(value)+','
+        for name, value in self.events.items():
+            if not value: continue
+            options += name+': '+str(value)+','
+        return options[:-1]
+
+    def datepicker_javascript(self):
+        return '''/* <![CDATA[ */
+            jq(document).ready(function(){
+                datepicker = jq("#%(id)s").datepicker({%(options)s});
+                jq("%(altField)s").attr("readonly", "readonly");
+                jq("%(altField)s").addClass('embed');
+                jq("%(altField)s").each(function() {
+                    jq(this).val(jq.datepicker.formatDate("%(altFormat)s",
+                        jq("#%(id)s").datepicker('getDate'),
+                        {shortYearCutoff: %(shortYearCutoff)s,
+                         dayNamesShort: %(dayNamesShort)s,
+                         dayNames: %(dayNames)s,
+                         monthNamesShort: %(monthNamesShort)s,
+                         monthNames: %(monthNames)s}
+                    ));
+                });
+                jq("#%(id)s-clear").click(function() { 
+                    jq("#%(id)s").val('');
+                    jq("%(altField)s").val('');
+                });
+            });
+            /* ]]> */''' % dict(id=self.id,
+                                options=self.compile_options(),
+                                altField=self._options['altField'],
+                                altFormat=self.options['altFormat'],
+                                shortYearCutoff=self.options['shortYearCutoff'],
+                                dayNamesShort=self.options['dayNamesShort'],
+                                dayNames=self.options['dayNames'],
+                                monthNamesShort=self.options['monthNamesShort'],
+                                monthNames=self.options['monthNames'])
+
+class DateTimePickerWidget(DatePickerWidget):
+    """ DateTime picker widget """
+    implementsOnly(IDateTimePickerWidget)
+   
+    klass = u'datetimepicker-widget'
+    value = u''
+    
+    years = range(1980, 2021)
+    months = range(1, 13)
+    days = range(1, 32)
+    
+    options = DatePickerWidget.options.copy()
+    options.update(dict(beforeShow='readLinked',
+                        yearRange=str(years[0])+':'+str(years[-1])))
+    events = DatePickerWidget.events.copy()
+    events.update(dict(onSelect='updateLinked'))
+    _options = dict(dateFormat='mm/dd/yy')
+    
+    @property
+    def hours(self):
+        hours = []
+        for i in range(0, 24):
+            if i<10:
+                hours.append('0'+str(i))
+            else:
+                hours.append(str(i))
+        return hours
+
+    @property
+    def minutes(self):
+        minutes = []
+        for i in range(0, 60, 5):
+            if i<10:
+                minutes.append('0'+str(i))
+            else:
+                minutes.append(str(i))
+        return minutes
+
+    def datepicker_javascript(self):
+        return '''/* <![CDATA[ */
+            jq(document).ready(function(){
+                // Prepare to show a date picker linked to three select controls 
+                function readLinked() { 
+                    jq("#%(id)s").val(jq("#%(id)s-month").val()+'/'+
+                                      jq("#%(id)s-day").val()+'/'+
+                                      jq("#%(id)s-year").val()+' '+
+                                      jq("#%(id)s-hour").val()+':'+
+                                      jq("#%(id)s-min").val());
+                    return {}; 
+                } 
+                // Update three select controls to match a date picker selection 
+                function updateLinked(date) { 
+                    if (date != '') {
+                        var datetime = date.split(" ");
+                        if (datetime.length==1) {
+                            date = datetime[0].split('/');
+                            if (date.length==3) {
+                                jq("#%(id)s-month").val(parseInt(date[0])); 
+                                jq("#%(id)s-day").val(parseInt(date[1])); 
+                                jq("#%(id)s-year").val(parseInt(date[2])); 
+                            }
+                        }
+                        if (datetime.length==2) {
+                            date = datetime[0].split('/');
+                            var time = datetime[1].split(':');
+                            if (date.length==3&&time.length==2) {
+                                jq("#%(id)s-month").val(date[0]); 
+                                jq("#%(id)s-day").val(date[1]); 
+                                jq("#%(id)s-year").val(date[2]); 
+                                jq("#%(id)s-hour").val(time[0]); 
+                                jq("#%(id)s-min").val(time[1]); 
+                            } 
+                        }
+                    }
+                    readLinked();
+                } 
+                updateLinked(jq("#%(id)s").val());
+                jq("#%(id)s-year").change(readLinked);
+                jq("#%(id)s-month").change(readLinked);
+                jq("#%(id)s-day").change(readLinked);
+                jq("#%(id)s-hour").change(readLinked);
+                jq("#%(id)s-min").change(readLinked);
+
+                datepicker = jq("#%(id)s").datepicker({%(options)s});
+                // Prevent selection of invalid dates through the select controls 
+                jq("#%(id)s-month, #%(id)s-year").change(function () { 
+                    var daysInMonth = 32 - new Date(jq("#%(id)s-year").val(), 
+                        jq("#%(id)s-month").val() - 1, 32).getDate(); 
+                    jq("#%(id)s-day option").attr("disabled", ""); 
+                    jq("#%(id)s-day option:gt(" + (daysInMonth - 1) +")").attr("disabled", "disabled"); 
+                    if (jq("#%(id)s-day").val() > daysInMonth) { 
+                        jq("#%(id)s-day").val(daysInMonth); 
+                    } 
+                });
+            });
+            /* ]]> */''' % dict(id=self.id,options=self.compile_options())
+                    
     def get_date_component(self, comp):
         """ Get string of of one part of datetime.
         
@@ -107,129 +307,6 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
         """ <option> checket attribute evaluator """
         return unicode(year) == self.get_date_component("%Y")
 
-    def datepicker_javascript(self):
-        return '''
-            jq(document).ready(function(){
-                datepicker = jq("#%(id)s").datepicker({ 
-                    %(onSelect)s%(altField)s%(altFormat)s
-                    showOn: "%(showOn)s", 
-                    buttonImage: "%(buttonImage)s", 
-                    buttonImageOnly: %(buttonImageOnly)s
-                });
-                datepicker.attr("readonly", "readonly");
-                datepicker.addClass('embed');
-            });''' % dict(id                = self.id,
-                          showOn            = self.showOn,
-                          buttonImage       = self.buttonImage,
-                          buttonImageOnly   = str(self.buttonImageOnly).lower(),
-                          onSelect          = self.onSelect and 'onSelect: '+self.onSelect+',' or '',
-                          altField          = self.altField and 'altField: "'+self.altField+'",' or '',
-                          altFormat         = self.altFormat and 'altFormat: "'+self.altFormat+'",' or '')
-
-class DateTimePickerWidget(DatePickerWidget):
-    """ DateTime picker widget """
-    implementsOnly(IDateTimePickerWidget)
-   
-    klass = u'datetimepicker-widget'
-    value = u''
-
-    years = range(1980, 2021)
-    months = range(1, 13)
-    days = range(1, 32)
-
-    @property
-    def hours(self):
-        hours = []
-        for i in range(0, 24):
-            if i<10:
-                hours.append('0'+str(i))
-            else:
-                hours.append(str(i))
-        return hours
-
-    @property
-    def minutes(self):
-        minutes = []
-        for i in range(0, 60, 5):
-            if i<10:
-                minutes.append('0'+str(i))
-            else:
-                minutes.append(str(i))
-        return minutes
-
-    def datepicker_javascript(self):
-        return '''
-            jq(document).ready(function(){
-                // Prepare to show a date picker linked to three select controls 
-                function readLinked() { 
-                    jq("#%(id)s").val(jq("#%(id)s-month").val()+'/'+
-                                      jq("#%(id)s-day").val()+'/'+
-                                      jq("#%(id)s-year").val()+' '+
-                                      jq("#%(id)s-hour").val()+':'+
-                                      jq("#%(id)s-min").val());
-                    return {}; 
-                } 
-                // Update three select controls to match a date picker selection 
-                function updateLinked(date) { 
-                    if (date != '') {
-                        var datetime = date.split(" ");
-                        if (datetime.length==1) {
-                            date = datetime[0].split('/');
-                            if (date.length==3) {
-                                jq("#%(id)s-month").val(parseInt(date[0])); 
-                                jq("#%(id)s-day").val(parseInt(date[1])); 
-                                jq("#%(id)s-year").val(parseInt(date[2])); 
-                            }
-                        }
-                        if (datetime.length==2) {
-                            date = datetime[0].split('/');
-                            var time = datetime[1].split(':');
-                            if (date.length==3&&time.length==2) {
-                                jq("#%(id)s-month").val(date[0]); 
-                                jq("#%(id)s-day").val(date[1]); 
-                                jq("#%(id)s-year").val(date[2]); 
-                                jq("#%(id)s-hour").val(time[0]); 
-                                jq("#%(id)s-min").val(time[1]); 
-                            } 
-                        }
-                    }
-                    readLinked();
-                } 
-                // Prevent selection of invalid dates through the select controls 
-                function checkLinkedDays() { 
-                    var daysInMonth = 32 - new Date(jq("#%(id)s-year").val(), 
-                        jq("#%(id)s-month").val() - 1, 32).getDate(); 
-                    jq("#%(id)s-day option").attr("disabled", ""); 
-                    jq("#%(id)s-day option:gt(" + (daysInMonth - 1) +")").attr("disabled", "disabled"); 
-                    if (jq("#%(id)s-day").val() > daysInMonth) { 
-                        jq("#%(id)s-day").val(daysInMonth); 
-                    } 
-                }
-                updateLinked(jq("#%(id)s").val());
-                jq("#%(id)s-year").change(readLinked);
-                jq("#%(id)s-month").change(readLinked);
-                jq("#%(id)s-day").change(readLinked);
-                jq("#%(id)s-hour").change(readLinked);
-                jq("#%(id)s-min").change(readLinked);
-                datepicker = jq("#%(id)s").datepicker({ 
-                        minDate: new Date(%(min_year)s, 1 - 1, 1),
-                        maxDate: new Date(%(max_year)s, 12 - 1, 31),
-                        beforeShow: readLinked,
-                        onSelect: updateLinked,
-                        showOn: "%(showOn)s", 
-                        buttonImage: "%(buttonImage)s", 
-                        buttonImageOnly: %(buttonImageOnly)s
-                });
-                datepicker.attr("readonly", "readonly");
-                jq("#%(id)s-month, #%(id)s-year").change(checkLinkedDays);
-            });''' % dict(id                = self.id,
-                          showOn            = self.showOn,
-                          buttonImage       = self.buttonImage,
-                          buttonImageOnly   = str(self.buttonImageOnly).lower(),
-                          min_year          = self.years[0],
-                          max_year          = self.years[-1])
-            
-                    
     def is_hour_checked(self, hour):
         """ <option> checket attribute evaluator """        
         return unicode(hour) == self.get_date_component("%H")
@@ -284,7 +361,6 @@ class DateTimeConverter(CalendarDataConverter):
 
     adapts(IDatetime, IDateTimePickerWidget)
     type = 'dateTime'
-    length = 'long'
 
     def toFieldValue(self, value):
         """See interfaces.IDataConverter""" 
