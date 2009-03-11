@@ -274,8 +274,8 @@ class DateTimePickerWidget(DatePickerWidget):
     
         # match z3c.form.converter here
         locale = self.request.locale
-        formatter = locale.dates.getFormatter("dateTime", "long")
-        
+        formatter = locale.dates.getFormatter("dateTime", "short")
+       
         if self.value == u'':
             return None
 
@@ -296,7 +296,6 @@ class DateTimePickerWidget(DatePickerWidget):
         if value == None:
             return False
         value = int(str(value))
-        
         return unicode(month) == unicode(value)
 
     def is_day_checked(self, day):

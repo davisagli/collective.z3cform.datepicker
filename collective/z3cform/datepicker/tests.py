@@ -1,4 +1,4 @@
-
+import datetime
 from zope.interface import Interface
 from zope.schema import Date
 from zope.schema import Datetime
@@ -30,6 +30,12 @@ class TestForm(Form):
     fields['date'].widgetFactory[INPUT_MODE] = DatePickerFieldWidget
     fields['datetime'].widgetFactory[INPUT_MODE] = DateTimePickerFieldWidget
 
+    def updateWidgets(self):
+        Form.updateWidgets(self)
+        now = datetime.datetime.now()
+#        self.fields['date'].field.default = now
+        self.fields['datetime'].field.default = now
+        
     @buttonAndHandler(u'Submit')
     def submit(self, action):
         data, errors = self.extractData()
