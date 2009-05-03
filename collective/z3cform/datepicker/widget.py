@@ -209,7 +209,10 @@ class DateTimePickerWidget(DatePickerWidget):
         return '''/* <![CDATA[ */
             jq(document).ready(function(){
                 // Prepare to show a date picker linked to three select controls 
-                function readLinked() { 
+                function readLinked() {
+                    if (this.nodeName && !jq(this).val()) {
+                        jq('select[id^=%(id)s]').val('');
+                    }
                     jq("#%(id)s").val(jq("#%(id)s-month").val()+'/'+
                                       jq("#%(id)s-day").val()+'/'+
                                       jq("#%(id)s-year").val()+' '+
@@ -226,7 +229,9 @@ class DateTimePickerWidget(DatePickerWidget):
                             if (date.length==3) {
                                 jq("#%(id)s-month").val(parseInt(date[0])); 
                                 jq("#%(id)s-day").val(parseInt(date[1])); 
-                                jq("#%(id)s-year").val(parseInt(date[2])); 
+                                jq("#%(id)s-year").val(parseInt(date[2]));
+                                jq("#%(id)s-hour").val('00');
+                                jq("#%(id)s-min").val('00');
                             }
                         }
                         if (datetime.length==2) {
