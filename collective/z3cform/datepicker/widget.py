@@ -20,13 +20,10 @@
 #############################################################################
 
 
-from DateTime import DateTime
 from zope.component import adapts
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import implementsOnly
-from zope.app.form.interfaces import ConversionError
-from zope.app.i18n import ZopeMessageFactory as _
 from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IDatetime
 from zope.i18n.format import DateTimeParseError
@@ -304,8 +301,8 @@ class DateTimePickerWidget(DatePickerWidget):
         return unicode(month) == unicode(value)
 
     def is_day_checked(self, day):
-        """ <option> checket attribute evaluator """        
-        return unicode(day) == self.get_date_component("%d")
+        """ <option> checket attribute evaluator """
+        return unicode(day) == self.get_date_component("%d").strip('0')
         
     def is_year_checked(self, year):
         """ <option> checket attribute evaluator """
@@ -335,6 +332,10 @@ class DateTimePickerWidget(DatePickerWidget):
             # name is in format form.widgets.acuteInterventions_actilyseTreatmentDate
             
             component_value = self.request.get(self.name + "-" + c, default)
+            if c in ('year', 'month', 'day') and not component_value:
+                return default
+            if c in ('hour', 'min') and not component_value:
+                component_value = '00'
             if component_value == default:
                 # One component missing, 
                 # cannot built datetime
