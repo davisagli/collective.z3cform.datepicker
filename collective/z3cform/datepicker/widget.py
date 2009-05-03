@@ -87,7 +87,7 @@ class DatePickerWidget(widget.HTMLTextInputWidget, Widget):
         minDate                 = None,
         monthNames              = ['January', 'February', 'March', 'April', 'May',
                                    'June', 'July', 'August', 'September',
-                                   'October', 'November', 'DecenextTextmber'],
+                                   'October', 'November', 'December'],
         monthNamesShort         = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
                                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         navigationAsDateFormat  = False,
