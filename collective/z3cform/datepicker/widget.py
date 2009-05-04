@@ -302,8 +302,13 @@ class DateTimePickerWidget(DatePickerWidget):
 
     def is_day_checked(self, day):
         """ <option> checket attribute evaluator """
-        return unicode(day) == self.get_date_component("%d").strip('0')
-        
+        value = self.get_date_component("%d")
+        # Strip leading zero
+        if value == None:
+            return False
+        value = int(str(value))
+        return unicode(day) == unicode(value)
+
     def is_year_checked(self, year):
         """ <option> checket attribute evaluator """
         return unicode(year) == self.get_date_component("%Y")
