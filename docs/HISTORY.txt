@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.1rc8 (unreleased)
+-------------------
+
+ * FIX: leading zero was preventing correct selection of the
+   existing day value on some systems [davisagli]
+ * Added support for setting datetime to NOVALUE when using
+   DateTimePickerFieldWidget with a non-required field. [davisagli]
+
 0.1rc7 - 03/11/2008
 -------------------
 
